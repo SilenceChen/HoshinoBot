@@ -1,4 +1,4 @@
-FROM python3.8.8
+FROM python3.8
 
 ADD ./* /code
 
