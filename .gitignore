@@ -1,8 +1,10 @@
 # Config Files
 config.py
 config.json
-hoshino/config/
 local_coolq_config/
+
+# 日志
+log
 
 # Database
 db.json

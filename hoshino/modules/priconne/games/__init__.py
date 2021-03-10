@@ -83,3 +83,6 @@ class Game:
 
 from . import desc_guess
 from . import avatar_guess
+from . import voice_guess
+from . import card_guess
+from . import story_guess

@@ -6,12 +6,12 @@ from nonebot.exceptions import CQHttpError
 from hoshino import R, Service, priv
 from hoshino.util import FreqLimiter, DailyNumberLimiter
 
-_max = 5
+_max = 50
 EXCEED_NOTICE = f'您今天已经冲过{_max}次了，请明早5点后再来！'
 _nlmt = DailyNumberLimiter(_max)
 _flmt = FreqLimiter(5)
 
-sv = Service('setu', manage_priv=priv.SUPERUSER, enable_on_default=True, visible=False)
+sv = Service('setu', manage_priv=priv.SUPERUSER, enable_on_default=True, visible=True)
 setu_folder = R.img('setu/').path
 
 def setu_gener():
@@ -28,7 +28,7 @@ def get_setu():
     return setu_gener.__next__()
 
 
-@sv.on_rex(r'不够[涩瑟色]|[涩瑟色]图|来一?[点份张].*[涩瑟色]|再来[点份张]|看过了|铜')
+@sv.on_rex(r'不够[涩瑟色]|[涩瑟色]图|来一?[点份张].*[涩瑟色]|再来[点份张]|看过了|随机[涩瑟色]图')
 async def setu(bot, ev):
     """随机叫一份涩图，对每个用户有冷却时间"""
     uid = ev['user_id']
@@ -48,6 +48,6 @@ async def setu(bot, ev):
     except CQHttpError:
         sv.logger.error(f"发送图片{pic.path}失败")
         try:
-            await bot.send(ev, '涩图太涩，发不出去勒...')
+            await bot.send(ev, '涩图太涩，发不出去惹...')
         except:
             pass
