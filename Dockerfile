@@ -1,8 +1,6 @@
 FROM python:3.8.8
 
-ADD ./* /code
-
-WORKDIR /code
+WORKDIR /
 
 RUN pip install -r requirements.txt
 
