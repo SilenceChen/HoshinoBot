@@ -1,6 +1,8 @@
 FROM python:3.8.8
 
-ADD ./HoshinoBot /code
+ADD ./hoshino /code
+ADD ./requirements.txt /code
+ADD ./run.py /code
 
 WORKDIR /code
 
