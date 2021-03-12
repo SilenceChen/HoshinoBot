@@ -1,12 +1,12 @@
 FROM python:3.8.8
 
-ADD ./hoshino /hoshino/
-ADD ./res /res/
-ADD ./requirements.txt /
-ADD ./run.py /
+ADD ./hoshino /hoshino/code/
+ADD ./res /res/code/
+ADD ./requirements.txt /code/
+ADD ./run.py /code/
 
-WORKDIR /
+WORKDIR /code
 
 RUN pip install -r ./requirements.txt
 
-CMD ["python", "/run.py"]
+CMD ["python", "/code/run.py"]
