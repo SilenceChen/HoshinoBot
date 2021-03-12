@@ -1,7 +1,7 @@
 FROM python:3.8.8
 
-ADD ./hoshino /hoshino/code/
-ADD ./res /res/code/
+ADD ./hoshino /code/hoshino/
+ADD ./res /code/res/
 ADD ./requirements.txt /code/
 ADD ./run.py /code/
 
