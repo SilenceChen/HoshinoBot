@@ -1,11 +1,11 @@
 FROM python:3.8.8
 
-ADD ./hoshino /code/hoshino
-ADD ./res /code/res
-ADD ./requirements.txt /code
-ADD ./run.py /code
+ADD ./hoshino /hoshino/
+ADD ./res /res/
+ADD ./requirements.txt /
+ADD ./run.py /
 
-WORKDIR /code
+WORKDIR /
 
 RUN pip install -r ./requirements.txt
 
