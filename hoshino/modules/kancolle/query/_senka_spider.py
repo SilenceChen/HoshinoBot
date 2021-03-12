@@ -5,8 +5,8 @@ from PIL import Image
 from io import BytesIO
 
 proxies = {
-  "http": "http://127.0.0.1:10809",
-  "https": "http://127.0.0.1:10809",
+  "http": "http://172.18.0.1:10809",
+  "https": "http://172.18.0.1:10809",
 }
 
 def get_rank_id(yy, mm, ss):
