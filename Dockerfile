@@ -9,4 +9,4 @@ WORKDIR /
 
 RUN pip install -r ./requirements.txt
 
-CMD ["python", "/code/run.py"]
+CMD ["python", "/run.py"]
