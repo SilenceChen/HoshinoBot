@@ -8,6 +8,8 @@ from datetime import datetime, timedelta
 from io import BytesIO
 from PIL import Image
 from hoshino import Service, priv
+from hoshino.modules.priconne import _pcr_data
+from hoshino.modules.priconne import chara
 from hoshino.typing import CQEvent
 from hoshino.util import DailyNumberLimiter
 import copy
@@ -21,7 +23,6 @@ class ScoreCounter2:
         os.makedirs(os.path.dirname(SCORE_DB_PATH), exist_ok=True)
         self._create_table()
         self._create_pres_table()
-        self._create_pcrheart_table()
     def _connect(self):
         return sqlite3.connect(SCORE_DB_PATH)
 
@@ -35,29 +36,31 @@ class ScoreCounter2:
         except:
             raise Exception('创建表发生错误')
 
-    def _add_score(self, gid, uid, score):
+    def _add_score(self, gid, uid ,score):
         try:
             current_score = self._get_score(gid, uid)
+            inscore = math.ceil(current_score+score)
             conn = self._connect()
             conn.execute("INSERT OR REPLACE INTO SCORECOUNTER (GID,UID,SCORE) \
-                                VALUES (?,?,?)", (gid, uid, current_score + score))
-            conn.commit()
+                                VALUES (?,?,?)", (gid, uid, inscore))
+            conn.commit()       
         except:
             raise Exception('更新表发生错误')
 
-    def _reduce_score(self, gid, uid, score):
+    def _reduce_score(self, gid, uid ,score):
         try:
             current_score = self._get_score(gid, uid)
             if current_score >= score:
+                inscore = math.ceil(current_score-score)
                 conn = self._connect()
                 conn.execute("INSERT OR REPLACE INTO SCORECOUNTER (GID,UID,SCORE) \
-                                VALUES (?,?,?)", (gid, uid, current_score - score))
-                conn.commit()
+                                VALUES (?,?,?)", (gid, uid, inscore))
+                conn.commit()     
             else:
                 conn = self._connect()
                 conn.execute("INSERT OR REPLACE INTO SCORECOUNTER (GID,UID,SCORE) \
                                 VALUES (?,?,?)", (gid, uid, 0))
-                conn.commit()
+                conn.commit()     
         except:
             raise Exception('更新表发生错误')
 
@@ -125,52 +128,5 @@ class ScoreCounter2:
             conn.execute(
                 "INSERT OR REPLACE INTO PRESTIGECOUNTER (GID, UID, PRESTIGE) VALUES (?, ?, ?)",
                 (gid, uid, prestige),
-            )
-    #记录公主之心数据
-    def _create_pcrheart_table(self):
-        try:
-            self._connect().execute('''CREATE TABLE IF NOT EXISTS PCRHEARTCOUNTER
-                          (GID             INT    NOT NULL,
-                           UID             INT    NOT NULL,
-                           PCRHEART           INT    NOT NULL,
-                           PRIMARY KEY(GID, UID));''')
-        except:
-            raise Exception('创建表发生错误')
-
-    def _set_pcrheart(self, gid, uid, pcrheart):
-        with self._connect() as conn:
-            conn.execute(
-                "INSERT OR REPLACE INTO PCRHEARTCOUNTER (GID, UID, PCRHEART) VALUES (?, ?, ?)",
-                (gid, uid, pcrheart),
-            )
-
-    def _get_pcrheart(self, gid, uid):
-        try:
-            r = self._connect().execute("SELECT PCRHEART FROM PCRHEARTCOUNTER WHERE GID=? AND UID=?", (gid, uid)).fetchone()
-            if r is None:
-               score_counter = ScoreCounter2()
-               score_counter._set_pcrheart(gid,uid,0)
-               return 0
-            return r[0]
-        except Exception as e:
-            raise Exception('错误:\n' + str(e))
-            return 0
-
-    def _add_pcrheart(self, gid, uid, num):
-        pcrheart = self._get_pcrheart(gid, uid)
-        pcrheart += num
-        with self._connect() as conn:
-            conn.execute(
-                "INSERT OR REPLACE INTO PCRHEARTCOUNTER (GID, UID, PCRHEART) VALUES (?, ?, ?)",
-                (gid, uid, pcrheart),
-            )
-
-    def _reduce_pcrheart(self, gid, uid, num):
-        pcrheart = self._get_pcrheart(gid, uid)
-        pcrheart -= num
-        with self._connect() as conn:
-            conn.execute(
-                "INSERT OR REPLACE INTO PCRHEARTCOUNTER (GID, UID, PCRHEART) VALUES (?, ?, ?)",
-                (gid, uid, pcrheart),
             )
 
